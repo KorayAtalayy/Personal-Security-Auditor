@@ -43,20 +43,16 @@ def is_admin():
 def check_firewall():
     print("\n[INFO] Checking Windows Firewall status...")
     try:
-        # Running the 'netsh' command to get firewall profile states
-        result = subprocess.run(
-            ["netsh", "advfirewall", "show", "allprofiles", "state"],
-            capture_output=True, text=True, check=True
-        )
-        
-        output = result.stdout.lower()
-        
-        # Checking if the firewall state is 'on'
-        if "state" in output and "on" in output:
-            print("[OK] Firewall is ENABLED. (Secure)")
+        from scanners import firewall_scanner
+        res = firewall_scanner.scan_firewall()
+        print(f"Status: {res['status']}")
+        print(f"Active Value: {res['value']}")
+        print(f"Active Source: {res['source']}")
+        print(f"Risk Level: {res['risk']}")
+        if res["status"] == "OK":
+            print(f"[OK] {res['message']}")
         else:
-            print("[WARNING] Firewall might be DISABLED or partially off! (Risk)")
-            
+            print(f"[WARNING] {res['message']}")
     except Exception as e:
         print(f"[ERROR] Could not check firewall. Details: {e}")
 

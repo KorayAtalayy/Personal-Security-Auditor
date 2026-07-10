@@ -1,7 +1,7 @@
 
 #DUTİES 2.WEEK:Scanning FİREWALL,Makes Report
 
-  import platform
+import platform
 import ctypes
 import datetime
 import sys
@@ -60,6 +60,39 @@ def check_firewall():
     except Exception as e:
         print(f"[ERROR] Could not check firewall. Details: {e}")
 
+def check_usb_policies():
+    print("\n[INFO] Checking AutoRun & AutoPlay Policies (USB Security)...")
+    try:
+        from scanners import usb_scanner
+        results = usb_scanner.scan_all()
+        
+        # Display AutoRun status
+        ar = results["autorun"]
+        print(f"\n--- AutoRun Policy Check ---")
+        print(f"Status: {ar['status']}")
+        print(f"Active Value: {ar['value']}")
+        print(f"Active Source: {ar['source']}")
+        print(f"Risk Level: {ar['risk']}")
+        if ar["status"] == "OK":
+            print(f"[OK] {ar['message']}")
+        else:
+            print(f"[WARNING] {ar['message']}")
+            
+        # Display AutoPlay status
+        ap = results["autoplay"]
+        print(f"\n--- AutoPlay Policy Check ---")
+        print(f"Status: {ap['status']}")
+        print(f"Active Value: {ap['value']}")
+        print(f"Active Source: {ap['source']}")
+        print(f"Risk Level: {ap['risk']}")
+        if ap["status"] == "OK":
+            print(f"[OK] {ap['message']}")
+        else:
+            print(f"[WARNING] {ap['message']}")
+            
+    except Exception as e:
+        print(f"[ERROR] Could not check AutoRun/AutoPlay. Details: {e}")
+
 # --- MAIN PROGRAM EXECUTION ---
 if __name__ == "__main__":
     print_banner()      
@@ -68,6 +101,7 @@ if __name__ == "__main__":
     if check_os():          
         is_admin()          
         check_firewall()  # <-- WEEK 2 TASK RUNS HERE!
+        check_usb_policies()  # <-- USB REGISTRY AUDIT RUNS HERE!
     
     print("\n" + "=" * 60)
     print("   SCAN COMPLETED.")

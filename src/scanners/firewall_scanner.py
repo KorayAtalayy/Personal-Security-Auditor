@@ -1,5 +1,3 @@
-import subprocess
-
 def scan_firewall():
     """
     Checks the status of the Windows Firewall by executing the 'netsh' command.
@@ -57,4 +55,3 @@ def scan_firewall():
             "risk": "HIGH",
             "message": f"Could not check firewall status. Error: {e}"
         }
-
